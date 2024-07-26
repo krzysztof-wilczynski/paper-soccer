@@ -1,5 +1,7 @@
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+import Soccer from './classes/Soccer.ts';
+
+const canvas  = <HTMLCanvasElement> document.getElementById("gameCanvas");
+const ctx = <CanvasRenderingContext2D> canvas.getContext("2d");
 
 const CELL_SIZE = 50;
 const CANVAS_WIDTH = 16;
@@ -220,5 +222,6 @@ function render() {
 }
 
 canvas.addEventListener("click", moveBall);
-render();
+// render();
 
+let soccer = new Soccer(ctx)

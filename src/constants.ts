@@ -1,3 +1,5 @@
+import {Line, Position} from './types.ts';
+
 export const CELL_SIZE = 50;
 export const CANVAS_WIDTH = 16;
 export const CANVAS_HEIGHT = 14;
@@ -20,7 +22,12 @@ export enum Direction {
     UP_LEFT
 }
 
-export const fieldBorderLines = [
+export const goalPoints: Position[] = [
+    {x: 7, y: 1}, {x: 8, y: 1}, {x: 9, y: 1},
+    {x: 7, y: 13}, {x: 8, y: 13}, {x: 9, y: 13}
+]
+
+export const fieldBorderLines: Line[] = [
     {xa: 4, ya: 2, xb: 5, yb: 2}, {xa: 5, ya: 2, xb: 6, yb: 2}, {xa: 6, ya: 2, xb: 7, yb: 2}, // góra
     {xa: 7, ya: 2, xb: 7, yb: 1}, {xa: 7, ya: 1, xb: 8, yb: 1}, {xa: 8, ya: 1, xb: 9, yb: 1}, {
         xa: 9,

@@ -1,35 +1,20 @@
 import * as settings from '../constants.ts'
-
-interface Position {
-    x: number;
-    y: number;
-}
-
-/**
- * @interface Line
- * @prop {number} xa line starting x position
- * @prop {number} ya line starting y position
- * @prop {number} xb line ending x position
- * @prop {number} yb line ending y position
- */
-interface Line {
-    xa: number;
-    ya: number;
-    xb: number;
-    yb: number;
-}
+import {Line, Position} from '../types.ts';
+import Player from './Player.ts';
 
 class Soccer {
-    canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D;
-    pos: Position;
-    lines: Line[];
+    canvas: HTMLCanvasElement
+    ctx: CanvasRenderingContext2D
+    pos: Position = {x: 8, y: 7}
+    lines: Line[] = []
+    players: Player[] = [new Player('Marzenna'), new Player('Gąszcz')]
+    activePlayer: Player = this.players[0]
+    moveNumber: number = 1
+    isGameOver: boolean = false
 
     constructor() {
         this.canvas = <HTMLCanvasElement>document.querySelector('canvas')
         this.ctx = <CanvasRenderingContext2D>this.canvas.getContext('2d')
-        this.pos = {x: 8, y: 7}
-        this.lines = []
 
         this.canvas.addEventListener('click', this.moveBall)
         this.render()
@@ -42,7 +27,6 @@ class Soccer {
 
         settings.fieldBorderLines.forEach((line: Line) => {
             this.drawLine(line)
-            this.lines.push(line)
         })
     }
 
@@ -90,29 +74,45 @@ class Soccer {
         const xb = Math.round((e.clientX - rect.left) / settings.CELL_SIZE)
         const yb = Math.round((e.clientY - rect.top) / settings.CELL_SIZE)
 
-        if (this.isValidMove(xb, yb)) {
-            this.lines.push({
-                xa: this.pos.x,
-                ya: this.pos.y,
-                xb,
-                yb
-            })
+        if (!this.checkIfMoveIsValid(xb, yb)) {
+            return
+        }
 
-            this.pos = {x: xb, y: yb}
-            this.render()
+        this.lines.push({
+            xa: this.pos.x,
+            ya: this.pos.y,
+            xb,
+            yb
+        })
+
+        this.pos = {x: xb, y: yb}
+        this.render()
+
+        if (!this.checkIfBallBounces()) {
+            this.moveNumber += 1
+            this.togglePlayers()
         }
     }
 
-    isValidMove = (xb: number, yb: number): boolean => {
+    checkIfBallBounces = (): boolean => {
+        for (let line of [...this.lines, ...settings.fieldBorderLines]) {
+            if (this.pos.x === line.xa && this.pos.y === line.ya) {
+                return true
+            }
+        }
+        return false
+    }
+
+    checkIfMoveIsValid = (xb: number, yb: number): boolean => {
         const deltaX = Math.abs(this.pos.x - xb)
         const deltaY = Math.abs(this.pos.y - yb)
 
-        const isOneFieldApart = ((deltaX === 0 || deltaX === 1) &&
+        const isOneFieldApart = (deltaX === 0 || deltaX === 1) &&
             (deltaY === 0 || deltaY === 1) &&
-            (deltaX === 1 || deltaY === 1))
+            (deltaX === 1 || deltaY === 1)
 
-        // check if lines will cover
-        for (let line of this.lines) {
+        // check if lines will cover existing lines or field borders
+        for (let line of [...this.lines, ...settings.fieldBorderLines]) {
             if ((line.xa === this.pos.x && line.ya === this.pos.y && line.xb === xb && line.yb === yb) ||
                 (line.xa === xb && line.ya === yb && line.xb === this.pos.x && line.yb === this.pos.y)) {
                 return false
@@ -122,14 +122,35 @@ class Soccer {
         return isOneFieldApart
     }
 
+    checkIfGameIsOver = (): boolean => {
+        for (let point of settings.goalPoints) {
+            if (this.pos.x === point.x && this.pos.y === point.y) {
+                this.isGameOver = true
+                this.canvas.removeEventListener('click', this.moveBall)
+                return true;
+            }
+        }
+        return false
+    }
+
+    togglePlayers = (): void => {
+        if (this.activePlayer === this.players[0]) {
+            this.activePlayer = this.players[1]
+        } else {
+            this.activePlayer = this.players[0]
+        }
+    }
+
     render = (): void => {
-        console.log(this)
+        console.log(this.moveNumber, this.activePlayer.name)
         this.drawCanvasGrid()
         this.drawFieldBorders()
         this.lines.forEach(line => {
             this.drawLine(line)
         })
         this.drawBall()
+        this.togglePlayers()
+        this.checkIfGameIsOver()
     }
 }
 

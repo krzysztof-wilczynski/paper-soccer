@@ -28,6 +28,7 @@ ALLOWED_HOSTS = os.getenv('SOCCER_ALLOWED_HOSTS', 'localhost,127.0.0.1').split('
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,6 +53,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'server.urls'
+AUTH_USER_MODEL = 'core.User'
 
 TEMPLATES = [
     {
@@ -70,6 +72,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'server.wsgi.application'
+ASGI_APPLICATION = 'server.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

@@ -1,0 +1,16 @@
+services:
+  mysql-server:
+    container_name: money-sql
+    restart: unless-stopped
+    image: mysql:8.4
+    command:
+      - mysqld
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --mysql-native-password=ON
+    volumes:
+      - ./db_data:/var/lib/mysql:rw
+    stop_grace_period: 1m
+    env_file: ".env"
+    ports:
+      - "3306:3306"

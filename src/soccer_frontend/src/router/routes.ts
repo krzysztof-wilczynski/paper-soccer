@@ -6,6 +6,24 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
   },
+  {
+    path: '/login',
+    component: () => import('layouts/ExternalLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('pages/LoginPage.vue')
+      }
+    ],
+    beforeEnter: (to, from, next) => {
+      const token = localStorage.getItem('token')
+      if (to.path === '/login' && token && token.length) {
+        next({ name: 'Dashboard' })
+      } else {
+        next()
+      }
+    }
+  },
 
   // Always leave this as last one,
   // but you can also remove it

@@ -1,8 +1,13 @@
-export interface Todo {
-  id: number;
-  content: string;
+export interface LoginCredentials {
+  login: string,
+  password: string
 }
 
-export interface Meta {
-  totalCount: number;
+export interface LoginCredentialsResponse {
+  refresh: string,
+  access: string
+}
+
+export interface PlayerInfoResponse {
+
 }

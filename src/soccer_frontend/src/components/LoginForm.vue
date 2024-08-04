@@ -3,14 +3,14 @@
     <q-form @submit.prevent.stop="onLogin"
             autofocus
             class="q-gutter-md">
-      <q-input filled v-model="login" label="Login" lazy-rules
+      <q-input filled v-model="credentials.login" label="Login" lazy-rules
                ref="loginRef"
                :rules="stringRules">
         <template #prepend>
           <q-icon name="mdi-account"/>
         </template>
       </q-input>
-      <q-input filled :type="isPassword ? 'password' : 'text'" v-model="password" label="Hasło"
+      <q-input filled :type="isPassword ? 'password' : 'text'" v-model="credentials.password" label="Hasło"
                ref="passwordRef"
                lazy-rules
                :rules="stringRules"/>
@@ -25,10 +25,11 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
-import {LoginUser} from 'src/api/token'
+import {LoginUser} from 'src/api/endpoints'
+import {LoginCredentials, LoginCredentialsResponse} from './models';
+import {reactive} from 'vue';
 
-const login = ref(null)
-const password = ref(null)
+const credentials = reactive<LoginCredentials>({login: '', password: ''})
 
 const errors = ref([])
 // const isValid = ref(false)
@@ -42,11 +43,11 @@ const stringRules = [
 
 const onLogin = async () => {
   try {
-    const {data} = await LoginUser(login.value, password.value)
-    localStorage.setItem('token', data.token)
-    await router.push({name: 'Dashboard'})
+    const token: LoginCredentialsResponse = await LoginUser(credentials)
+    localStorage.setItem('access', token.access)
+    localStorage.setItem('refresh', token.refresh)
+    router.push({name: 'Dashboard'})
   } catch (error) {
-    console.log(error)
     errors.value = error.response.data.non_field_errors
   }
 }

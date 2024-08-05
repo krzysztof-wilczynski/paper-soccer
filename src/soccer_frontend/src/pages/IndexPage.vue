@@ -3,7 +3,7 @@
     <Suspense>
       <PlayerInfo/>
       <template #fallback>
-        Pizda
+        ...
       </template>
     </Suspense>
   </q-page>

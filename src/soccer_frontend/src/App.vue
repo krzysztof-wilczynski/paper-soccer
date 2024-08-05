@@ -1,9 +1,14 @@
 <template>
-  <router-view />
+  <router-view/>
 </template>
 
 <script setup lang="ts">
-defineOptions({
-  name: 'App'
-});
+import {socket} from 'src/socket';
+import {useConnectionStore} from 'src/stores/connection';
+
+const connectionStore = useConnectionStore();
+
+socket.off()
+
+connectionStore.bindEvents()
 </script>

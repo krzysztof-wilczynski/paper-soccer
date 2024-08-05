@@ -2,6 +2,9 @@
   <q-page class="row items-center justify-evenly">
     <Suspense>
       <PlayerInfo/>
+      <template #fallback>
+        Pizda
+      </template>
     </Suspense>
   </q-page>
 </template>

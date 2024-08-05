@@ -9,5 +9,9 @@ export interface LoginCredentialsResponse {
 }
 
 export interface PlayerInfoResponse {
-
+  id: number,
+  rating: number,
+  deviation: number,
+  volatility: number,
+  user: number
 }

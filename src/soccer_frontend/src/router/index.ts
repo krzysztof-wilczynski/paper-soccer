@@ -33,7 +33,7 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('access')
     if (to.path !== '/login' && (!token || !token.length)) next({path: '/login'})
     else next()
   })

@@ -13,12 +13,12 @@ export const LoginUser = async (credentials: DTO.LoginCredentials) => {
   }
 }
 
-export const getPlayerInfo = async (nickname: string = ''): Promise<DTO.PlayerInfoResponse> => {
+export const getPlayerInfo = async (nickname: string = ''): Promise<DTO.PlayerInfoResponse | null> => {
   try {
     const response = await api
       .get(`core/player/${nickname}`);
     return await response.data;
   } catch (e) {
-    return ({});
+    return null;
   }
 }

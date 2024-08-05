@@ -18,7 +18,6 @@
         <q-btn label="Zaloguj" class="full-width" type="submit" color="primary"/>
       </div>
     </q-form>
-    {{ errors.join() }}
   </div>
 </template>
 
@@ -30,9 +29,6 @@ import {LoginCredentials, LoginCredentialsResponse} from './models';
 import {reactive} from 'vue';
 
 const credentials = reactive<LoginCredentials>({login: '', password: ''})
-
-const errors = ref([])
-// const isValid = ref(false)
 const isPassword = ref(true)
 
 const router = useRouter()
@@ -42,13 +38,9 @@ const stringRules = [
 ]
 
 const onLogin = async () => {
-  try {
-    const token: LoginCredentialsResponse = await LoginUser(credentials)
-    localStorage.setItem('access', token.access)
-    localStorage.setItem('refresh', token.refresh)
-    router.push({name: 'Dashboard'})
-  } catch (error) {
-    errors.value = error.response.data.non_field_errors
-  }
+  const token: LoginCredentialsResponse = await LoginUser(credentials)
+  localStorage.setItem('access', token.access)
+  localStorage.setItem('refresh', token.refresh)
+  router.push({name: 'Dashboard'})
 }
 </script>

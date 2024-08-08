@@ -11,7 +11,7 @@ from core.models import Player
 
 
 class LobbyConsumer(AsyncWebsocketConsumer):
-    group_name = 'queue'
+    group_name = 'lobby'
     players = []
 
     def __init__(self, *args, **kwargs):
@@ -31,11 +31,23 @@ class LobbyConsumer(AsyncWebsocketConsumer):
             self.group_name, self.channel_name
         )
 
-        await self.send(
-            text_data=json.dumps({"type": "waiting", "inQueue": len(self.players)})
+        await self.channel_layer.group_send(
+            self.group_name,
+            {"type": "lobby:join", "message": len(self.players)}
         )
+
+    async def receive(self, text_data=None, binary_data=None):
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+        print(text_data_json)
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name
         )
+
+    async def queue_message(self, event):
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))

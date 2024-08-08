@@ -1,24 +1,16 @@
-import { defineStore } from 'pinia';
-import { socket } from 'src/socket';
+import {defineStore} from 'pinia';
+import {socket} from 'src/socket';
 
 export const useConnectionStore = defineStore('connection', {
   state: () => ({
-    isConnected: false,
+    socket,
+    inQueue: false,
+    playersInQueue: null,
   }),
 
   actions: {
-    bindEvents() {
-      socket.on('connect', () => {
-        this.isConnected = true;
-      });
-
-      socket.on('disconnect', () => {
-        this.isConnected = false;
-      });
-    },
-
-    connect() {
-      socket.connect();
+    joinQueue() {
+      this.socket.send(JSON.stringify({'message': 'japa koniu'}))
     }
-  },
+  }
 });

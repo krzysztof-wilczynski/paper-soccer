@@ -1,16 +1,15 @@
 <template>
   <div class="absolute-top bg-primary text-white items-center flex" style="height: 131px">
-    {{ connected }}
+    isConnected: {{ connectionStore.isConnected }}
   </div>
 </template>
 
 <script setup lang="ts">
-import {state} from 'src/socket';
-import {computed} from 'vue';
+import {useConnectionStore} from 'src/stores/connection';
 
-const connected = computed(() => {
-  return state.connected
-})
+const connectionStore = useConnectionStore()
+
+
 </script>
 
 <style scoped lang="scss">

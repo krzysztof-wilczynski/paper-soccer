@@ -1,29 +1,9 @@
-import {reactive} from 'vue'
-import {io} from 'socket.io-client'
+export const socket = new WebSocket('ws://localhost:8000/ws/lobby/')
 
-export const state = reactive({
-  connected: false,
-  fooEvents: [],
-  barEvents: []
-});
-
-const WS_URL = process.env.DEV ? 'http://localhost:8000' : 'http://localhost:8000'
-export const socket = io(WS_URL)
-
-socket.on('connect', () => {
-  state.connected = true;
-});
-
-socket.on('disconnect', () => {
-  state.connected = false;
-});
-
-socket.on('foo', (...args) => {
-  state.fooEvents.push(args);
-});
-
-socket.on('bar', (...args) => {
-  state.barEvents.push(args);
-});
-
-
+socket.onmessage = (e) => {
+  switch (e.type) {
+    case 'lobby_join' :{
+      console.log('joined')
+    }
+  }
+}
